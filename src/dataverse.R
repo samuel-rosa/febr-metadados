@@ -1,6 +1,9 @@
-# Tabela 'identificacao'
-#
-# citation ####
+# Fontes: https://github.com/GlobalDataverseCommunityConsortium/dataverse-language-packs
+
+########################################################################################
+# Tabela 'citacao'
+# A tabela 'citacao' armazena os dados necessários para identificar o conjunto de dados
+# e seus autores e responsáveis.
 # descarregar e processar arquivo citation_br.properties
 url <- paste0(
   "https://raw.githubusercontent.com/GlobalDataverseCommunityConsortium/",
@@ -35,9 +38,11 @@ colnames(cite) <- cite[1, ]
 cite <- cite[-1, ]
 # fundir dados
 citation <- cbind(cite_prop, cite[, 6:ncol(cite)])
-head(citation)
-#
-# geospatial ####
+
+########################################################################################
+# Tabela 'geoespatial'
+# A tabela 'geoespacial' armazena dados que identificam o contexto geográfico do
+# conjunto de dados.
 # descarregar e processar arquivo geospatial_br.properties
 url <- paste0(
   "https://raw.githubusercontent.com/GlobalDataverseCommunityConsortium/",
@@ -71,30 +76,28 @@ colnames(geo) <- geo[1, ]
 geo <- geo[-1, ]
 # fundir dados
 geospatial <- cbind(geo_prop, geo[, 6:ncol(geo)], termURI = NA)
-head(geospatial)
-#
-# metadatablock ####
+
+########################################################################################
+# Tabelas 'citacao' e 'geoespacial'
+# O processamento final das tabelas 'citacao' e 'geoespacial' é feito de modo unificado
+# pois suas estruturas são idênticas.
 metadatablock <- as.data.frame(rbind(citation, geospatial), stringsAsFactors = FALSE)
 metadatablock <- metadatablock[, c(15, 1:2, 14, 3:13, 16)]
 colnames(metadatablock) <- sub(" ", "", colnames(metadatablock))
-# parent
-idx <- match(metadatablock$parent, metadatablock$name)
-# title
-metadatablock$title <- paste0(metadatablock$title[idx], ": ", metadatablock$title)
+idx <- match(metadatablock$parent, metadatablock$name) # parent
+metadatablock$title <- paste0(metadatablock$title[idx], ": ", metadatablock$title) # title
 metadatablock$title <- sub("NA: ", "", metadatablock$title)
-# description
-metadatablock$description <- paste0(metadatablock$description[idx], ": ", metadatablock$description, ".")
+metadatablock$description <- paste0(metadatablock$description[idx], ": ", metadatablock$description, ".") # description
 metadatablock$description <- sub("NA: ", "", metadatablock$description)
-# watermark
-metadatablock$watermark <- sub("[en]", "", metadatablock$watermark, fixed = TRUE)
-# parent
-metadatablock <- metadatablock[-na.exclude(idx), ]
-# schema
-metadatablock <- cbind(schema = "Dataverse v4.x", metadatablock)
+metadatablock$watermark <- sub("[en]", "", metadatablock$watermark, fixed = TRUE) # watermark
+metadatablock <- metadatablock[-na.exclude(idx), ] # parent
+metadatablock <- cbind(schema = "Dataverse v4.x", metadatablock) # schema
 str(metadatablock)
-# salvar dados
-write.table(x = metadatablock, file = "res/dataverse.txt", sep = "\t", row.names = FALSE)
+write.table( # salvar definições
+  x = metadatablock, file = "data/dataverse.txt", sep = "\t", row.names = FALSE)
 
+########################################################################################
+# Planilha 'citacao'
 # Criar planilha 'identificacao'
 # Quadro colunas são usadas:
 # schema: nome do esquema de metadados (Dataverse v4.x)
