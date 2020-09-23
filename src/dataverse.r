@@ -1,4 +1,5 @@
 # Fontes: https://github.com/GlobalDataverseCommunityConsortium/dataverse-language-packs
+source <- c("GlobalDataverseCommunityConsortium", "samuel-rosa")
 
 ########################################################################################
 # Tabela 'citacao'
@@ -6,8 +7,8 @@
 # e seus autores e responsáveis.
 # descarregar e processar arquivo citation_br.properties
 url <- paste0(
-  "https://raw.githubusercontent.com/GlobalDataverseCommunityConsortium/",
-  "dataverse-language-packs/develop/pt_BR/citation_br.properties")
+  "https://raw.githubusercontent.com/", source[2],
+  "/dataverse-language-packs/develop/pt_BR/citation_br.properties")
 cite_prop <- readLines(url)[- (1:2)]
 cite_prop <- lapply(cite_prop, function(x) {
   strsplit(x, split = ".", fixed = TRUE)[[1]][1:3]
@@ -28,8 +29,8 @@ cite_prop[, "watermark"] <- sub(
   " [en]", "[en]", cite_prop[, "watermark"], fixed = TRUE)
 # descarregar e processar arquivo `metadatablocks/citation.tsv`
 url <- paste0(
-  "https://raw.githubusercontent.com/GlobalDataverseCommunityConsortium/",
-  "dataverse/develop/scripts/api/data/metadatablocks/citation.tsv")
+  "https://raw.githubusercontent.com/", source[1],
+  "/dataverse/develop/scripts/api/data/metadatablocks/citation.tsv")
 cite <- readLines(url)[-(1:2)]
 cite[1] <- sub("#datasetField", "", cite[1], fixed = TRUE)
 cite <- strsplit(cite[1:(nrow(cite_prop) + 1)], split = "\t")
@@ -45,8 +46,8 @@ citation <- cbind(cite_prop, cite[, 6:ncol(cite)])
 # conjunto de dados.
 # descarregar e processar arquivo geospatial_br.properties
 url <- paste0(
-  "https://raw.githubusercontent.com/GlobalDataverseCommunityConsortium/",
-  "dataverse-language-packs/develop/pt_BR/geospatial_br.properties")
+  "https://raw.githubusercontent.com/", source[2],
+  "/dataverse-language-packs/develop/pt_BR/geospatial_br.properties")
 geo_prop <- readLines(url)[- (1:2)]
 geo_prop <- lapply(geo_prop, function(x) {
   strsplit(x, split = ".", fixed = TRUE)[[1]][1:3]
@@ -66,8 +67,8 @@ colnames(geo_prop) <- c("name", "title", "description", "watermark")
 geo_prop[, "watermark"] <- sub(" [en]", "[en]", geo_prop[, "watermark"], fixed = TRUE)
 # descarregar e processar arquivo `metadatablocks/geospatial.tsv`
 url <- paste0(
-  "https://raw.githubusercontent.com/GlobalDataverseCommunityConsortium/",
-  "dataverse/develop/scripts/api/data/metadatablocks/geospatial.tsv")
+  "https://raw.githubusercontent.com/", source[1],
+  "/dataverse/develop/scripts/api/data/metadatablocks/geospatial.tsv")
 geo <- readLines(url)[- (1:2)]
 geo[1] <- sub("#datasetField", "", geo[1], fixed = TRUE)
 geo <- strsplit(geo[1:(nrow(geo_prop) + 1)], split = "\t")
